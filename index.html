@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- Disable Zoom -->
+<meta name="viewport"
+content="width=device-width, height=device-height,
+initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+
+<title>Number Guessing Game</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        touch-action: manipulation;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .game {
+        background: white;
+        width: 90%;
+        max-width: 360px;
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+        margin-bottom: 10px;
+    }
+
+    p {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    select, input, button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 12px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    input {
+        outline: none;
+    }
+
+    button {
+        background: #667eea;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+</style>
+</head>
+
+<body>
+
+<div class="game">
+    <h1>🎯 Guess The Number</h1>
+
+    <select id="level" onchange="startGame()">
+        <option value="10">Easy (1-10)</option>
+        <option value="50">Medium (1-50)</option>
+        <option value="100" selected>Hard (1-100)</option>
+    </select>
+
+    <p id="rangeText"></p>
+
+    <input type="number" id="guess" placeholder="Enter number">
+    <button onclick="checkGuess()">Check</button>
+    <button onclick="startGame()">🔄 Restart</button>
+
+    <p id="message"></p>
+    <p id="attempts">Attempts: 0</p>
+    <p id="timer">Time: 0 sec</p>
+</div>
+
+<script>
+    let randomNumber, attempts, time, timerInterval, maxNumber;
+
+    function startGame() {
+        maxNumber = Number(document.getElementById("level").value);
+        randomNumber = Math.floor(Math.random() * maxNumber) + 1;
+        attempts = 0;
+        time = 0;
+
+        document.getElementById("guess").value = "";
+        document.getElementById("message").innerText = "";
+        document.getElementById("attempts").innerText = "Attempts: 0";
+        document.getElementById("timer").innerText = "Time: 0 sec";
+        document.getElementById("rangeText").innerText =
+            "Guess between 1 and " + maxNumber;
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            time++;
+            document.getElementById("timer").innerText =
+                "Time: " + time + " sec";
+        }, 1000);
+    }
+
+    function checkGuess() {
+        let guess = Number(document.getElementById("guess").value);
+        if (!guess) {
+            document.getElementById("message").innerText = "❗ Enter a number";
+            return;
+        }
+
+        attempts++;
+
+        if (guess === randomNumber) {
+            document.getElementById("message").innerText = "🎉 You Win!";
+            clearInterval(timerInterval);
+        } else if (guess > randomNumber) {
+            document.getElementById("message").innerText = "📈 Too High!";
+        } else {
+            document.getElementById("message").innerText = "📉 Too Low!";
+        }
+
+        document.getElementById("attempts").innerText =
+            "Attempts: " + attempts;
+    }
+
+    startGame();
+</script>
+
+</body>
+</html>
